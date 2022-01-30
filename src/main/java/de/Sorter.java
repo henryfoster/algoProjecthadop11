@@ -20,7 +20,6 @@ public class Sorter {
         job.setJarByClass(Sorter.class);
         job.setMapperClass(SortMapper.class);
         job.setReducerClass(SortReducer.class);
-        job.setCombinerClass(SortReducer.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);

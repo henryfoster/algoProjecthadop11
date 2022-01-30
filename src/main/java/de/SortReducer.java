@@ -17,10 +17,6 @@ public class SortReducer extends Reducer<Text, Text, Text, Text> {
         HashMap<String, Integer>input = new HashMap<>();
 
         for (Text val: values) {
-            if (val.toString().contains("{") ) {
-                    context.write(key, val);
-                    return;
-                }
             // seperate values
             String[] word = val.toString().split(",");
             if (input.size() < 10) {
@@ -35,6 +31,7 @@ public class SortReducer extends Reducer<Text, Text, Text, Text> {
             }
 
         }
+
         context.write(new Text(key), new Text(input.toString()));
 
     }
