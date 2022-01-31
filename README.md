@@ -30,7 +30,7 @@ For further instructions' checkout https://github.com/big-data-europe/docker-had
 - clone this repo: `git clone https://github.com/henryfoster/algoProjecthadop11.git`
 - enter the repo folder: `cd algoProjecthadop11`
 - install maven dependencies: `mvn clean install`
-- build executable jar: `mvn clean build`
+- build executable jar: `mvn clean package`
 
 **Run job on Hadoop**
 - copy the jar from the target folder into the cluster: `docker cp target/AlgorithmenUndDatenstrukturenAbgabeHadoop-1.0-SNAPSHOT.jar namenode:work.jar`
