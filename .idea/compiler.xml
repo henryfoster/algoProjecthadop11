@@ -9,5 +9,8 @@
         <module name="AlgorithmenUndDatenstrukturenAbgabeHadoop" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="algoProjecthadop11" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

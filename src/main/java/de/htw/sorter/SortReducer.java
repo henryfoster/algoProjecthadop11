@@ -1,5 +1,6 @@
 package de.htw.sorter;
 
+import de.htw.util.HashMapUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class SortReducer extends Reducer<Text, Text, Text, Text> {
                 topTen.put(word[0], Integer.parseInt(word[1]));
             } else {
                 // finds the key with the smallest value
-                String smallestKey = findSmallestKey(topTen);
+                String smallestKey = HashMapUtils.findSmallestKey(topTen);
                 // just to be sure and avoid NullPointerException
                 if (null == smallestKey) {
                     continue;
@@ -35,47 +36,11 @@ public class SortReducer extends Reducer<Text, Text, Text, Text> {
             }
         }
         // just to sort the top ten map at the end
-        topTen = sortByValue(topTen);
+        topTen = HashMapUtils.sortByValue(topTen);
         // write back to the context: key = language value = topTen map formatted as string
         context.write(new Text(key), new Text(topTen.toString()));
     }
 
-    // code form: https://stackoverflow.com/a/2776245/9560200
-    private static String findSmallestKey(HashMap<String, Integer> map) {
-        Map.Entry<String, Integer> min = null;
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            if (min == null || min.getValue() > entry.getValue()) {
-                min = entry;
-            }
-        }
-        if (null == min) {
-            return null;
-        }
-        return min.getKey();
-    }
 
-    // code from: https://www.geeksforgeeks.org/sorting-a-hashmap-according-to-values/
-    private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> hm)
-    {
-        // Create a list from elements of HashMap
-        List<Map.Entry<String, Integer> > list =
-                new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
-
-        // Sort the list
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
-            public int compare(Map.Entry<String, Integer> o1,
-                               Map.Entry<String, Integer> o2)
-            {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
-
-        // put data from sorted list to hashmap
-        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
-        for (Map.Entry<String, Integer> aa : list) {
-            temp.put(aa.getKey(), aa.getValue());
-        }
-        return temp;
-    }
 
 }
