@@ -1,4 +1,4 @@
-package de;
+package de.htw.sorter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -13,6 +13,7 @@ import java.io.IOException;
 public class Sorter {
 
     public static void main(String[] args) throws IOException {
+        // setting up Job
         Configuration conf = new Configuration();
 
         Job job = Job.getInstance(conf, "Word Sorter");
@@ -24,24 +25,25 @@ public class Sorter {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.addInputPath(job, new Path("/home/edu/uni/files/output/part-r-00000"));
-
+        // setting up input file
         FileSystem fs = FileSystem.get(conf);
-        Path outDir = new Path("/home/edu/uni/files/output2");
 
+        String inputPath = "/home/edu/uni/files/output/part-r-00000";
+        FileInputFormat.addInputPath(job, new Path(inputPath));
 
+        // setting up input path
+        String outputPath = "/home/edu/uni/files/output2";
+        Path outDir = new Path(outputPath);
         if(fs.exists(outDir)) {
             System.out.println("Already exists ... overwriting");
             fs.delete(outDir, true);
         }
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
-        FileOutputFormat.setOutputPath(job, new Path("/home/edu/uni/files/output2"));
-        job.setNumReduceTasks(1);
+        // starting the job
         try {
             job.waitForCompletion(true);
-        } catch (InterruptedException exception) {
-            exception.printStackTrace();
-        } catch (ClassNotFoundException exception) {
+        } catch (InterruptedException | ClassNotFoundException exception) {
             exception.printStackTrace();
         }
 
