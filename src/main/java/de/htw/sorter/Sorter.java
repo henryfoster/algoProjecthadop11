@@ -28,11 +28,11 @@ public class Sorter {
         // setting up input file
         FileSystem fs = FileSystem.get(conf);
 
-        String inputPath = "/home/edu/uni/files/output/part-r-00000";
+        String inputPath = args[0]; // "/home/edu/uni/files/output/part-r-00000"
         FileInputFormat.addInputPath(job, new Path(inputPath));
 
         // setting up input path
-        String outputPath = "/home/edu/uni/files/output2";
+        String outputPath =  args[1]; // "/home/edu/uni/files/output2"
         Path outDir = new Path(outputPath);
         if(fs.exists(outDir)) {
             System.out.println("Already exists ... overwriting");

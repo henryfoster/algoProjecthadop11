@@ -2,7 +2,9 @@ package de.htw.counter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -11,6 +13,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *  base code from https://moodle.htw-berlin.de/mod/resource/view.php?id=1086055
@@ -35,23 +39,21 @@ public class Counter {
         // add more path for more folders
         FileSystem fs = FileSystem.get(conf);
         String inputPath = args[0]; // "/home/edu/uni/files/texts"
-
         Path inputDir = new Path(inputPath);
-        if(fs.exists(inputDir)) {
-            System.out.println("Input dir found!");
-            File[] directories = new File(inputPath+"/").listFiles(File::isDirectory);
-            if (null == directories) {
-                System.out.println("Directories could not be found! " +
-                        "(make sure the input directory has following structure dir/dir/file)"
-                );
-                return;
+        RemoteIterator<LocatedFileStatus> fileStatusListIterator = fs.listFiles(
+                inputDir, true);
+
+        HashSet<String> set = new HashSet<>();
+        while(fileStatusListIterator.hasNext()){
+            LocatedFileStatus fileStatus = fileStatusListIterator.next();
+            String folder = fileStatus.getPath().toString().substring(0,fileStatus.getPath().toString().lastIndexOf("/") );
+
+            if (set.contains(folder)) {
+                continue;
             }
-            // iterating over all subfolders (languages) and adding them to input
-            for (File dir: directories) {
-                String path = dir.getPath();
-                System.out.println(path);
-                FileInputFormat.addInputPath(job, new Path(path));
-            }
+            System.out.println(folder);
+            set.add(folder);
+            FileInputFormat.addInputPath(job, new Path(folder));
         }
 
         // setting up output
